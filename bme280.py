@@ -1,4 +1,11 @@
-# Author: Paul Cunnane 2016
+#
+# Author: Butch Anton 2017
+# Based on the work by #Author: Paul Cunnane 2016
+# All the good stuff is his.  I just added some bytearray wrapping
+# to work around a problem in the LoPy firmware (thanks, Alex!) and
+# hacked in support for altitude (in meters).
+#
+# All comments below come from Paul's library.
 #
 # This module borrows heavily from the Adafruit BME280 Python library
 # and the Adafruit GPIO/I2C library. Original copyright notices are reproduced
@@ -35,10 +42,10 @@
 # THE SOFTWARE.
 
 import time
-
+import math
 
 # BME280 default address.
-BME280_I2CADDR = 0x76
+BME280_I2CADDR = 0x77
 
 # Operating Modes
 BME280_OSAMPLE_1 = 1
@@ -82,6 +89,10 @@ BME280_REGISTER_PRESSURE_DATA = 0xF7
 BME280_REGISTER_TEMP_DATA = 0xFA
 BME280_REGISTER_HUMIDITY_DATA = 0xFD
 
+# Pressure constant to calculate altitude
+
+SEALEVELPRESSURE_HPA = 1013.25
+
 
 class Device:
     """Class for communicating with an I2C device.
@@ -103,12 +114,12 @@ class Device:
     def write8(self, register, value):
         """Write an 8-bit value to the specified register."""
         value = value & 0xFF
-        self._i2c.writeto_mem(self._address, register, value)
+        self._i2c.writeto_mem(self._address, register, bytearray([value]))
 
     def write16(self, register, value):
         """Write a 16-bit value to the specified register."""
         value = value & 0xFFFF
-        self.i2c.writeto_mem(self._address, register, value)
+        self.i2c.writeto_mem(self._address, register, bytearray([value]))
 
     def readRaw8(self):
         """Read an 8-bit value on the bus (without register)."""
@@ -214,7 +225,7 @@ class BME280:
         h5 = self._device.readS8(BME280_REGISTER_DIG_H6)
         h5 = (h5 << 24) >> 20
         self.dig_H5 = h5 | (
-            self._device.readU8(BME280_REGISTER_DIG_H5) >> 4 & 0x0F)
+                self._device.readU8(BME280_REGISTER_DIG_H5) >> 4 & 0x0F)
 
     def read_raw_temp(self):
         """Reads the raw (uncompensated) temperature from the sensor."""
@@ -255,8 +266,8 @@ class BME280:
         adc = self.read_raw_temp()
         var1 = ((adc >> 3) - (self.dig_T1 << 1)) * (self.dig_T2 >> 11)
         var2 = ((
-            (((adc >> 4) - self.dig_T1) * ((adc >> 4) - self.dig_T1)) >> 12) *
-            self.dig_T3) >> 14
+                        (((adc >> 4) - self.dig_T1) * ((adc >> 4) - self.dig_T1)) >> 12) *
+                self.dig_T3) >> 14
         self.t_fine = var1 + var2
         return (self.t_fine * 5 + 128) >> 8
 
@@ -283,13 +294,18 @@ class BME280:
         # print 'Raw humidity = {0:d}'.format (adc)
         h = self.t_fine - 76800
         h = (((((adc << 14) - (self.dig_H4 << 20) - (self.dig_H5 * h)) +
-             16384) >> 15) * (((((((h * self.dig_H6) >> 10) * (((h *
-                              self.dig_H3) >> 11) + 32768)) >> 10) + 2097152) *
-                              self.dig_H2 + 8192) >> 14))
+               16384) >> 15) * (((((((h * self.dig_H6) >> 10) * (((h *
+                                                                   self.dig_H3) >> 11) + 32768)) >> 10) + 2097152) *
+                                 self.dig_H2 + 8192) >> 14))
         h = h - (((((h >> 15) * (h >> 15)) >> 7) * self.dig_H1) >> 4)
         h = 0 if h < 0 else h
         h = 419430400 if h > 419430400 else h
         return h >> 12
+
+    def read_altitude(self):
+        p = self.read_pressure() / 25600  # to hPa
+        a = 44330.0 * (1.0 - math.pow(p / SEALEVELPRESSURE_HPA, 0.1903))
+        return int(100 * a)  # Altitude in centimeters-ish
 
     @property
     def temperature(self):
@@ -314,3 +330,11 @@ class BME280:
         hi = h // 1024
         hd = h * 100 // 1024 - hi * 100
         return "{}.{:02d}%".format(hi, hd)
+
+    @property
+    def altitude(self):
+        "Return the altitude in meters."
+        a = self.read_altitude()
+        ai = a // 100
+        ad = a - ai * 100
+        return "{}.{:02d}m".format(ai, ad)

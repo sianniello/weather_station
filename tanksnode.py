@@ -1,15 +1,12 @@
-from machine import I2C
-
 from mqtt import MQTTClient
-# from hcsr04 import HCSR04
-import bme280
+from hcsr04 import HCSR04
 import utime
 
 
-class WeatherNode:
+class TanksNode:
     def __init__(self, io_id, io_user, io_key, frequency, port=1883):
         # Turn sensors on/off
-        self.sensor_on = False
+        self.sensor_on = True
 
         # Save variables passed for use in other methods
         self.io_id = io_id
@@ -18,17 +15,14 @@ class WeatherNode:
         self.update_frequency = frequency
         self.port = port
 
-        i2c = I2C(I2C.MASTER, pins=('P16', 'P17'))
-        self.sensor = bme280.BME280(i2c=i2c)
+        self.sensor = HCSR04()
         utime.sleep_ms(100)
         print("Weather MQTT client is ready.")
 
     def read_data(self):
         utime.sleep_ms(50)
-        temp = self.sensor.read_temperature() / 100.00
-        humi = self.sensor.read_humidity() / 1024.00
-        pres = self.sensor.read_pressure() / 256.00
-        return temp, humi, pres
+        cm = self.sensor.distance_cm()
+        return cm
 
     def message_callback(self, topic, msg):
         print("[{0}]: {1}".format(topic, msg))
@@ -49,9 +43,7 @@ class WeatherNode:
             if self.sensor_on:
                 data = self.read_data()
                 print(" >", data)
-                client.publish(topic="{0}/feeds/temperature".format(self.io_user), msg=str(data[0]))
-                client.publish(topic="{0}/feeds/humidity".format(self.io_user), msg=str(data[1]))
-                client.publish(topic="{0}/feeds/pressure".format(self.io_user), msg=str(data[2]))
+                client.publish(topic="{0}/feeds/tank-1".format(self.io_user), msg=str(data[0]))
                 utime.sleep(self.update_frequency)
 
             client.check_msg()
