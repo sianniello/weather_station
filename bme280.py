@@ -205,4 +205,4 @@ class BME280:
         # return ("{}C".format(t / 100), "{}.{:02d}hPa".format(pi, pd),
         #         "{}.{:02d}%".format(hi, hd))
 
-        return t / 100, float(str("{}.{:02d}".format(pi, pd))) * 100, float("{}.{:02d}".format(hi, hd))
+        return t / 100, float(str("{}.{:01d}".format(pi, pd))) * 100, float("{}.{:01d}".format(hi, hd))
