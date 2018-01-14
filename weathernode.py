@@ -48,9 +48,9 @@ class WeatherNode:
             if self.sensor_on:
                 data = self.read_data()
                 print(" >", data)
-                client.publish(topic="{0}/feeds/temperature".format(self.io_user), msg=str(data[0]))
+                client.publish(topic="{0}/feeds/temperature".format(self.io_user), msg=str("{0:0.1f}".format(data[0])))
                 client.publish(topic="{0}/feeds/humidity".format(self.io_user), msg=str(data[1]))
-                client.publish(topic="{0}/feeds/pressure".format(self.io_user), msg=str(data[2]))
+                client.publish(topic="{0}/feeds/pressure".format(self.io_user), msg=str(data[2] / 100))
                 utime.sleep(self.update_frequency)
 
             client.check_msg()

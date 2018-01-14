@@ -11,11 +11,12 @@ _SSID = "NETGEAR55"
 
 
 def connect():
-    wlan = WLAN(mode=WLAN.STA)
+    wlan = WLAN(mode=WLAN.STA, antenna=WLAN.EXT_ANT)
     nets = wlan.scan()
     for net in nets:
         if net.ssid == _SSID:
             print('Network found!')
+            wlan.ifconfig(config=('192.168.0.5', '255.255.255.0', '192.168.0.1', '8.8.8.8'))
             wlan.connect(net.ssid, auth=(net.sec, 'phobiccoconut688'), timeout=5000)
 
             while not wlan.isconnected():
