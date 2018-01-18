@@ -20,6 +20,7 @@ def connect():
             wlan.connect(net.ssid, auth=(net.sec, 'phobiccoconut688'), timeout=5000)
 
             while not wlan.isconnected():
+                machine.Timer.Alarm(idle_callback, 60)
                 machine.idle()  # save power while waiting
 
             print('WLAN connection succeeded!')
