@@ -44,4 +44,5 @@ def run():
 
 def idle_callback(alarm):
     alarm.cancel()
+    print("Connection lost, trying to reconnect")
     connect()
