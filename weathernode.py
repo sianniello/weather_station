@@ -40,6 +40,7 @@ class WeatherNode:
                             user=self.io_user,
                             password=self.io_key,
                             port=self.port)
+
         client.set_callback(self.message_callback)
         client.connect()
         client.subscribe(topic="{0}/feeds/sensors".format(self.io_user))
@@ -47,7 +48,7 @@ class WeatherNode:
         while True:
             if self.sensor_on:
                 data = self.read_data()
-                print(" >", data)
+                print(" > ", data)
                 client.publish(topic="{0}/feeds/temperature".format(self.io_user), msg=str("{0:0.1f}".format(data[0])))
                 client.publish(topic="{0}/feeds/humidity".format(self.io_user), msg=str(data[1]))
                 client.publish(topic="{0}/feeds/pressure".format(self.io_user), msg=str(data[2] / 100))

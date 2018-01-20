@@ -1,3 +1,5 @@
-import weather
+from machine import UART, RTC
+import os
 
-weather.run()
+uart = UART(0, 115200)
+os.dupterm(uart)
