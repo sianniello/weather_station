@@ -56,5 +56,5 @@ def logging(msg):
     print(msg)
     with open('log.txt', 'a') as the_file:
         ts = machine.RTC().now()
-        the_file.write(msg + 'Timestamp: {0}\r\n'.format(ts))
+        the_file.write(msg + ' Timestamp: {0}\r\n'.format(ts))
         the_file.close()
