@@ -30,6 +30,7 @@ def connect():
         contentBytes = MicroWebCli.JSONRequest(url)
         tuple_data = contentBytes['timestamp']
         machine.RTC(datetime=utime.localtime(tuple_data))
+        logging("Real Time Clock updated.")
     except OSError:
         logging("No remote time service.")
 
@@ -49,7 +50,7 @@ def run():
 def idle_callback(alarm):
     alarm.cancel()
     logging('Connection lost, trying to re-connect')
-    connect()
+    run()
 
 
 def logging(msg):
