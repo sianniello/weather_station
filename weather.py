@@ -22,8 +22,8 @@ def connect():
     while not wlan.isconnected():
         machine.idle()  # save power while waiting
 
-    print('WLAN connection succeeded!')
-    print("My IP address is: {0}".format(wlan.ifconfig()[0]))
+    logging('WLAN connection succeeded!')
+    logging("My IP address is: {0}".format(wlan.ifconfig()[0]))
 
     url = 'http://api.timezonedb.com/v2/get-time-zone?key=1QNTARL4R9XW&by=zone&zone=Europe/Rome&format=json'
     try:
@@ -56,5 +56,6 @@ def logging(msg):
     print(msg)
     with open('log.txt', 'a') as the_file:
         ts = machine.RTC().now()
-        the_file.write(msg + ' Timestamp: {0}\r\n'.format(ts))
+        str_ts = '{:02d}-{:02d}-{:02d} {:02d}:{:02d}'.format(ts[0], ts[1], ts[2], ts[3], ts[4])
+        the_file.write(msg + '\t{0}\r\n'.format(str_ts))
         the_file.close()
