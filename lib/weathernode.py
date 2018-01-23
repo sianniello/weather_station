@@ -1,7 +1,8 @@
 from machine import I2C
 from mqtt import MQTTClient
 from bme280 import BME280
-import utime, machine
+import utime
+from logging import logging
 
 
 class WeatherNode:
@@ -19,7 +20,7 @@ class WeatherNode:
         i2c = I2C(0, I2C.MASTER, pins=('P4', 'P5'))
         self.sensor = BME280(i2c=i2c)
         utime.sleep_ms(100)
-        print("Weather MQTT client is ready.")
+        logging("Weather MQTT client is ready.")
 
     def read_data(self):
         utime.sleep_ms(50)
@@ -47,11 +48,16 @@ class WeatherNode:
 
         while True:
             if self.sensor_on:
+                # transitory time
+                for i in range(0, 9):
+                    self.read_data()
+                    utime.sleep(2)
+
                 data = self.read_data()
                 print(" > ", data)
                 client.publish(topic="{0}/feeds/temperature".format(self.io_user), msg=str("{0:0.1f}".format(data[0])))
-                client.publish(topic="{0}/feeds/humidity".format(self.io_user), msg=str(data[1]))
-                client.publish(topic="{0}/feeds/pressure".format(self.io_user), msg=str(data[2] / 100))
+                client.publish(topic="{0}/feeds/humidity".format(self.io_user), msg=str("{0:0.1f}".format(data[1])))
+                client.publish(topic="{0}/feeds/pressure".format(self.io_user), msg=str("{0:0.1f}".format(data[2] / 100)))
                 utime.sleep(self.update_frequency)
 
             client.check_msg()

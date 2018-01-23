@@ -1,7 +1,8 @@
-from weathernode import WeatherNode
-import machine
 import utime
-from lib.logging import logging
+import machine
+from logging import logging
+import WeatherNode
+
 
 _IO_ID = "233171"
 _IO_USERNAME = "steno87"
@@ -19,3 +20,5 @@ def run():
             logging('MQTT connection Error.')
             utime.sleep(60)
             machine.reset()
+
+
