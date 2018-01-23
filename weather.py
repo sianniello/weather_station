@@ -1,8 +1,7 @@
-from network import WLAN
 from weathernode import WeatherNode
 import machine
 import utime
-from logging import logging
+from lib.logging import logging
 
 _IO_ID = "233171"
 _IO_USERNAME = "steno87"
