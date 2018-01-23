@@ -1,5 +1,6 @@
 from machine import UART
 import os
+import utime
 import machine
 from network import WLAN
 from microWebCli import MicroWebCli
@@ -27,7 +28,7 @@ logging('WLAN connection succeeded!')
 logging("My IP address is: {0}".format(wlan.ifconfig()[0]))
 
 try:
-    contentBytes = MicroWebCli.JSONRequest(_TIMEZONE_URL, connTimeoutSec=5)
+    contentBytes = MicroWebCli.JSONRequest(_TIMEZONE_URL)
     tuple_data = contentBytes['timestamp']
     machine.RTC(datetime=utime.localtime(tuple_data))
     logging("Real Time Clock updated.")
