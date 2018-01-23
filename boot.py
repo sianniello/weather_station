@@ -33,4 +33,4 @@ try:
     machine.RTC(datetime=utime.localtime(tuple_data))
     logging("Real Time Clock updated.")
 except Exception as e:
-    logging("No remote time service. {0}".format(e))
+    logging("Real Time Clock updating failed. Error: {0}".format(e))
