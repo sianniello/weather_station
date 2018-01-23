@@ -1,7 +1,7 @@
 import utime
 import machine
 from logging import logging
-import WeatherNode
+from weathernode import WeatherNode
 
 
 _IO_ID = "233171"
