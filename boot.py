@@ -14,12 +14,10 @@ _SSID = "NETGEAR55"
 _TIMEZONE_URL = 'http://api.timezonedb.com/v2/get-time-zone?key=1QNTARL4R9XW&by=zone&zone=Europe/Rome&format=json'
 
 
-wlan = WLAN(mode=WLAN.STA)   # get current object, without changing the mode
-# configuration below MUST match your home router settings!!
+wlan = WLAN(mode=WLAN.STA)
 wlan.ifconfig(config=('192.168.0.5', '255.255.255.0', '192.168.0.1', '8.8.8.8'))
 
 if not wlan.isconnected():
-    # change the line below to match your network ssid, security and password
     wlan.connect(_SSID, auth=(WLAN.WPA2, 'phobiccoconut688'), timeout=5000)
     while not wlan.isconnected():
         machine.idle()  # save power while waiting
