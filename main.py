@@ -1,7 +1,7 @@
 # main.py -- put your code here!
 
 import utime
-import machine
+import sys
 from logging import logging
 from weathernode import WeatherNode
 
@@ -21,7 +21,11 @@ def run():
         except OSError:
             logging('MQTT connection Error.')
             utime.sleep(60)
-            machine.reset()
+            sys.exit()
+
+
+run()
+
 
 
 
