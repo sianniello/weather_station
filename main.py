@@ -27,13 +27,13 @@ def connect():
 
 def run():
     weather_mqtt_client = WeatherNode(_IO_ID, _IO_USERNAME, _IO_KEY, _FREQUENCY)
-    try:
-        weather_mqtt_client.run()
-    except OSError:
-        logging('MQTT connection Error.')
-        utime.sleep(60)
-        connect()
-        run()
+    while True:
+        try:
+            weather_mqtt_client.run()
+        except OSError:
+            logging('MQTT connection Error.')
+            utime.sleep(60)
+            connect()
 
 
 run()
