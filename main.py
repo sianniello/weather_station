@@ -34,6 +34,7 @@ def run():
             logging('MQTT connection Error.')
             utime.sleep(60)
             connect()
+            continue
 
 
 run()
