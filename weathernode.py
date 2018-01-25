@@ -70,9 +70,9 @@ class WeatherNode:
                 if self.battery:
                     client.publish(topic="{0}/feeds/battery".format(self.io_user),
                                    msg=str("{0:0.1f}".format(data[3])))
-                    print(" >{0} - battery: {1}".format(data[0:2], data[3]))
+                    print(" >{0} - battery: {1}".format(data[0:3], data[3]))
                 else:
-                    print(" >{0}".format(data))
+                    print(" >{0}".format(data[0:3]))
 
                 utime.sleep(self.update_frequency)
 
