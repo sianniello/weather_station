@@ -31,9 +31,10 @@ def run():
         try:
             weather_mqtt_client.run()
         except OSError:
-            logging('MQTT connection Error.')
+            logging('MQTT connection Error! Trying to reconnect...')
             utime.sleep(60)
             connect()
+            logging("MQTT client restarted.")
             continue
 
 
