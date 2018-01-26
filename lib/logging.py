@@ -24,5 +24,5 @@ def file_exist(file):
     try:
         with open(file, 'R'):
             return True
-    except IOError:
+    except OSError:
         return False
