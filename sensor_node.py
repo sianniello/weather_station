@@ -28,7 +28,7 @@ class SensorNode:
 
     def read_data(self):
         utime.sleep_ms(50)
-        value = self.sensor.value
+        value = self.sensor.value if self.sensor else 0
         batt = self.apin() * 0.00176 if self.battery else 0
 
         return value, batt

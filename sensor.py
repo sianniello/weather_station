@@ -29,16 +29,15 @@ def run():
     while True:
         try:
             sensor_mqtt_client.cycle()
+            machine.Timer.Alarm(callback, 120, periodic=False)
+
+            machine.sleep()
         except OSError:
             logging('MQTT connection Error! Trying to reconnect...')
             utime.sleep(60)
             connect()
             logging("MQTT client restarted.")
             continue
-
-        machine.Timer.Alarm(callback, 60, periodic=False)
-
-        machine.sleep()
 
 
 def callback(alarm):
