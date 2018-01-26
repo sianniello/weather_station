@@ -6,6 +6,7 @@ from logging import logging
 from weathernode import WeatherNode
 from network import WLAN
 
+# Power saving version
 
 _IO_ID = "233171"
 _IO_USERNAME = "steno87"
