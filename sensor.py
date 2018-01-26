@@ -1,5 +1,3 @@
-# main.py -- put your code here!
-
 import utime
 import machine
 from logging import logging
@@ -45,6 +43,3 @@ def run():
 
 def callback(alarm):
     pass
-
-
-run()
