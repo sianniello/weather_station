@@ -1,4 +1,4 @@
-from machine import I2C, ADC
+from machine import I2C, ADC, rng
 from mqtt import MQTTClient
 import utime
 from logging import logging
@@ -28,7 +28,7 @@ class SensorNode:
 
     def read_data(self):
         utime.sleep_ms(50)
-        value = self.sensor.value if self.sensor else 0
+        value = self.sensor.value if self.sensor else int(rng() / 16777215 * 10)
         batt = self.apin() * 0.00176 if self.battery else 0
 
         return value, batt

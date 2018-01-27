@@ -1,5 +1,3 @@
-# main.py -- put your code here!
-
 import utime
 import machine
 from logging import logging
@@ -28,23 +26,15 @@ def connect():
 
 def run():
     sensor_mqtt_client = SensorNode(_IO_ID, _IO_USERNAME, _IO_KEY, _FREQUENCY)
-    while True:
-        try:
-            sensor_mqtt_client.cycle()
-        except OSError:
-            logging('MQTT connection Error! Trying to reconnect...')
-            utime.sleep(60)
-            connect()
-            logging("MQTT client restarted.")
-            continue
+    try:
+        sensor_mqtt_client.cycle()
 
-        machine.Timer.Alarm(callback, 60, periodic=False)
-
-        machine.sleep()
-
-
-def callback(alarm):
-    pass
+        machine.deepsleep(60000)
+    except OSError:
+        logging('MQTT connection Error! Trying to reconnect...')
+        utime.sleep(60)
+        connect()
+        logging("MQTT client restarted.")
 
 
 run()
