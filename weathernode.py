@@ -6,7 +6,7 @@ from logging import logging
 
 
 class WeatherNode:
-    def __init__(self, io_id, io_user, io_key, frequency, port=1883, battery=False):
+    def __init__(self, io_id, io_user, io_key, port=1883, battery=False):
         # Turn sensors on/off
         self.sensor_on = True
 
@@ -14,7 +14,6 @@ class WeatherNode:
         self.io_id = io_id
         self.io_user = io_user
         self.io_key = io_key
-        self.update_frequency = frequency
         self.port = port
         self.battery = battery
 
@@ -40,7 +39,7 @@ class WeatherNode:
         print("[{0}]: {1}".format(topic, msg))
         self.sensor_on = (msg == b'ON')
 
-    def run(self):
+    def cycle(self):
         # Setup MQTT client
         client = MQTTClient(client_id=self.io_id,
                             server="io.adafruit.com",
@@ -52,29 +51,26 @@ class WeatherNode:
         client.connect()
         client.subscribe(topic="{0}/feeds/sensors".format(self.io_user))
 
-        while True:
-            if self.sensor_on:
-                # transitory time
-                for i in range(0, 9):
-                    self.read_data()
-                    utime.sleep(2)
+        if self.sensor_on:
+            # transitory time
+            for i in range(0, 9):
+                self.read_data()
+                utime.sleep(2)
 
-                data = self.read_data()
+            data = self.read_data()
 
-                client.publish(topic="{0}/feeds/temperature".format(self.io_user), msg=str("{0:0.1f}".format(data[0])))
-                client.publish(topic="{0}/feeds/humidity".format(self.io_user), msg=str("{0:0.1f}".format(data[1])))
+            client.publish(topic="{0}/feeds/temperature".format(self.io_user), msg=str("{0:0.1f}".format(data[0])))
+            client.publish(topic="{0}/feeds/humidity".format(self.io_user), msg=str("{0:0.1f}".format(data[1])))
 
-                client.publish(topic="{0}/feeds/pressure".format(self.io_user),
-                               msg=str("{0:0.1f}".format(data[2] / 100)))
+            client.publish(topic="{0}/feeds/pressure".format(self.io_user),
+                           msg=str("{0:0.1f}".format(data[2] / 100)))
 
-                if self.battery:
-                    client.publish(topic="{0}/feeds/battery".format(self.io_user),
-                                   msg=str("{0:0.1f}".format(data[3])))
-                    print(" >{0} - battery: {1}".format(data[0:3], data[3]))
-                else:
-                    print(" >{0}".format(data[0:3]))
+            if self.battery:
+                client.publish(topic="{0}/feeds/battery".format(self.io_user),
+                               msg=str("{0:0.1f}".format(data[3])))
+                print(" >{0} - battery: {1}".format(data[0:3], data[3]))
+            else:
+                print(" >{0}".format(data[0:3]))
 
-                utime.sleep(self.update_frequency)
-
-            client.check_msg()
-            utime.sleep(1)
+        client.check_msg()
+        utime.sleep(2)

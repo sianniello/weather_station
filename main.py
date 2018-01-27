@@ -1,7 +1,7 @@
 import utime
 import machine
 from logging import logging
-from sensor_node import SensorNode
+from weathernode import WeatherNode
 from network import WLAN
 
 # Power saving version
@@ -25,7 +25,7 @@ def connect():
 
 
 def run():
-    sensor_mqtt_client = SensorNode(_IO_ID, _IO_USERNAME, _IO_KEY, _FREQUENCY)
+    sensor_mqtt_client = WeatherNode(_IO_ID, _IO_USERNAME, _IO_KEY, _FREQUENCY)
     try:
         sensor_mqtt_client.cycle()
 

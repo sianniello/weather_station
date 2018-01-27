@@ -67,3 +67,4 @@ class SensorNode:
                 print(" >{0}".format(data[0]))
 
         client.check_msg()
+        utime.sleep(2)
