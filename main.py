@@ -25,16 +25,18 @@ def connect():
 
 
 def run():
-    sensor_mqtt_client = WeatherNode(_IO_ID, _IO_USERNAME, _IO_KEY, _FREQUENCY)
-    try:
-        sensor_mqtt_client.cycle()
+    sensor_mqtt_client = WeatherNode(_IO_ID, _IO_USERNAME, _IO_KEY)
+    while True:
+        try:
+            sensor_mqtt_client.cycle()
 
-        machine.deepsleep(60000)
-    except OSError:
-        logging('MQTT connection Error! Trying to reconnect...')
-        utime.sleep(60)
-        connect()
-        logging("MQTT client restarted.")
+            machine.deepsleep(300000)
+        except OSError:
+            logging('MQTT connection Error! Trying to reconnect...')
+            utime.sleep(60)
+            connect()
+            logging("MQTT client restarted.")
+            continue
 
 
 run()
