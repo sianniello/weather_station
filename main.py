@@ -9,7 +9,7 @@ from network import WLAN
 _IO_ID = "233171"
 _IO_USERNAME = "steno87"
 _IO_KEY = "2383dd6dc0c74d3aa3d689bbcbf7d63d"
-_FREQUENCY = 5  # seconds
+_FREQUENCY = 5  # minutes
 _SSID = "NETGEAR55"
 
 
@@ -20,17 +20,14 @@ def connect():
         while not wlan.isconnected():
             machine.idle()
 
-    logging('WLAN connection succeeded!')
-    logging("My IP address is: {0}".format(wlan.ifconfig()[0]))
-
 
 def run():
-    sensor_mqtt_client = WeatherNode(_IO_ID, _IO_USERNAME, _IO_KEY, battery=True)
+    sensor_mqtt_client = WeatherNode(_IO_ID, _IO_USERNAME, _IO_KEY, battery=False)
     while True:
         try:
             sensor_mqtt_client.cycle()
 
-            machine.deepsleep(300000)
+            machine.deepsleep(60000 * _FREQUENCY)
         except OSError:
             logging('MQTT connection Error! Trying to reconnect...')
             utime.sleep(60)

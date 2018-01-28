@@ -1,7 +1,7 @@
 import utime
 import machine
 from logging import logging
-from sensor_node import SensorNode
+from weathernode import WeatherNode
 from network import WLAN
 
 # Power saving version
@@ -9,7 +9,7 @@ from network import WLAN
 _IO_ID = "233171"
 _IO_USERNAME = "steno87"
 _IO_KEY = "2383dd6dc0c74d3aa3d689bbcbf7d63d"
-_FREQUENCY = 5  # seconds
+_FREQUENCY = 1  # minutes
 _SSID = "NETGEAR55"
 
 
@@ -20,18 +20,17 @@ def connect():
         while not wlan.isconnected():
             machine.idle()
 
-    logging('WLAN connection succeeded!')
-    logging("My IP address is: {0}".format(wlan.ifconfig()[0]))
-
 
 def run():
-    sensor_mqtt_client = SensorNode(_IO_ID, _IO_USERNAME, _IO_KEY, _FREQUENCY)
-    try:
-        sensor_mqtt_client.cycle()
+    sensor_mqtt_client = WeatherNode(_IO_ID, _IO_USERNAME, _IO_KEY, battery=False)
+    while True:
+        try:
+            sensor_mqtt_client.cycle()
 
-        machine.deepsleep(60000)
-    except OSError:
-        logging('MQTT connection Error! Trying to reconnect...')
-        utime.sleep(60)
-        connect()
-        logging("MQTT client restarted.")
+            machine.deepsleep(60000 * _FREQUENCY)
+        except OSError:
+            logging('MQTT connection Error! Trying to reconnect...')
+            utime.sleep(60)
+            connect()
+            logging("MQTT client restarted.")
+            continue

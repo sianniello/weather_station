@@ -1,15 +1,11 @@
-from machine import UART, RTC, idle, SD
-import os
-import uos
+from machine import UART, RTC, idle
 from network import WLAN
 from logging import logging
-
-uart = UART(0, 115200)
-os.dupterm(uart)
 
 
 _SSID = "NETGEAR55"
 
+rtc = RTC()
 wlan = WLAN(mode=WLAN.STA)
 wlan.ifconfig(config=('192.168.0.5', '255.255.255.0', '192.168.0.1', '8.8.8.8'))
 
@@ -21,8 +17,8 @@ if not wlan.isconnected():
 logging('WLAN connection succeeded!')
 logging("My IP address is: {0}".format(wlan.ifconfig()[0]))
 
-try:
-    RTC().ntp_sync("0.it.pool.ntp.org")
-    logging("Real Time Clock updated.")
-except Exception as e:
-    logging("Real Time Clock updating failed. Error: {0}".format(e))
+if not rtc.synced():
+    try:
+        rtc.ntp_sync("0.it.pool.ntp.org")
+    except Exception as e:
+        logging("RTC updating failed: {0}".format(e))
