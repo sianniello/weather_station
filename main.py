@@ -9,7 +9,7 @@ from network import WLAN
 _IO_ID = "233171"
 _IO_USERNAME = "steno87"
 _IO_KEY = "2383dd6dc0c74d3aa3d689bbcbf7d63d"
-_FREQUENCY = 5  # minutes
+_FREQUENCY = 1  # minutes
 _SSID = "NETGEAR55"
 
 
@@ -29,10 +29,9 @@ def run():
 
             machine.deepsleep(60000 * _FREQUENCY)
         except OSError:
-            logging('MQTT connection Error! Trying to reconnect...')
+            logging('MQTT connection Error!')
             utime.sleep(60)
             connect()
-            logging("MQTT client restarted.")
             continue
 
 

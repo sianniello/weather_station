@@ -20,7 +20,6 @@ class WeatherNode:
         i2c = I2C(0, I2C.MASTER, pins=('P4', 'P5'))
         self.sensor = BME280(i2c=i2c)
         utime.sleep_ms(100)
-        logging("Weather MQTT client is ready.")
 
         if battery:
             self.apin = ADC().channel(pin='P13')
