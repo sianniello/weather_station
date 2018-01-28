@@ -1,10 +1,12 @@
-from machine import UART, RTC, idle
+from machine import UART, RTC, idle, SD
 import os
+import uos
 from network import WLAN
 from logging import logging
 
 uart = UART(0, 115200)
 os.dupterm(uart)
+
 
 _SSID = "NETGEAR55"
 
