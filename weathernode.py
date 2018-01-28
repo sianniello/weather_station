@@ -5,6 +5,9 @@ import utime
 from logging import logging
 
 
+_VCONST = 0.00124
+
+
 class WeatherNode:
     def __init__(self, io_id, io_user, io_key, port=1883, battery=False):
         # Turn sensors on/off
@@ -31,7 +34,7 @@ class WeatherNode:
         temp = values[0]
         pres = values[1]
         humi = values[2]
-        batt = self.apin() * 0.00176 if self.battery else 0
+        batt = self.apin() * _VCONST if self.battery else 0
 
         return temp, humi, pres, batt
 

@@ -3,6 +3,8 @@ from mqtt import MQTTClient
 import utime
 from logging import logging
 
+_VCONST = 0.00124
+
 
 class SensorNode:
     def __init__(self, io_id, io_user, io_key, frequency, port=1883, battery=False):
@@ -24,12 +26,12 @@ class SensorNode:
         logging("Weather MQTT client is ready.")
 
         if battery:
-            self.apin = ADC().channel(pin='P13')
+            self.apin = ADC().channel(pin='P16')
 
     def read_data(self):
         utime.sleep_ms(50)
         value = self.sensor.value if self.sensor else int(rng() / 16777215 * 10)
-        batt = self.apin() * 0.00176 if self.battery else 0
+        batt = self.apin() * _VCONST if self.battery else 0
 
         return value, batt
 

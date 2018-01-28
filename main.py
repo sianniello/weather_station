@@ -25,7 +25,7 @@ def connect():
 
 
 def run():
-    sensor_mqtt_client = WeatherNode(_IO_ID, _IO_USERNAME, _IO_KEY)
+    sensor_mqtt_client = WeatherNode(_IO_ID, _IO_USERNAME, _IO_KEY, True)
     while True:
         try:
             sensor_mqtt_client.cycle()
