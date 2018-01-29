@@ -22,7 +22,7 @@ class WeatherNode:
         utime.sleep_ms(100)
 
         if battery:
-            self.apin = ADC().channel(pin='P13')
+            self.apin = ADC().channel(pin='P16')
 
     def read_data(self):
         utime.sleep_ms(50)
@@ -30,7 +30,7 @@ class WeatherNode:
         temp = values[0]
         pres = values[1]
         humi = values[2]
-        batt = self.apin() * 0.00124 if self.battery else 0
+        batt = self.apin() * 0.0016174 if self.battery else 0
 
         return temp, humi, pres, batt
 

@@ -9,7 +9,7 @@ from network import WLAN
 _IO_ID = "233171"
 _IO_USERNAME = "steno87"
 _IO_KEY = "2383dd6dc0c74d3aa3d689bbcbf7d63d"
-_FREQUENCY = 1  # minutes
+_FREQUENCY = 5  # minutes
 _SSID = "NETGEAR55"
 
 
@@ -22,7 +22,7 @@ def connect():
 
 
 def run():
-    sensor_mqtt_client = WeatherNode(_IO_ID, _IO_USERNAME, _IO_KEY, battery=False)
+    sensor_mqtt_client = WeatherNode(_IO_ID, _IO_USERNAME, _IO_KEY, battery=True)
     while True:
         try:
             sensor_mqtt_client.cycle()

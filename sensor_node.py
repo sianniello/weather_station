@@ -3,7 +3,7 @@ from mqtt import MQTTClient
 import utime
 from logging import logging
 
-_VCONST = 0.00124
+_VCONST = 0.0016174
 
 
 class SensorNode:
